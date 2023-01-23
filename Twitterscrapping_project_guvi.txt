@@ -1,0 +1,67 @@
+#import modules
+import snscrape.modules.twitter as sntwitter
+import streamlit as st
+import pandas as pd
+import pymongo
+import datetime
+from time import sleep
+from IPython.display import display
+import numpy as np
+
+#Display the title
+st.title("Twitter Scrapper")
+
+#Display the tweet
+with st.form(key="form"):
+	Username=st.text_input(label="Enter the tweet")
+
+#Display Limit
+	Number=st.slider("Enter the limit",10,1000,500)
+	st.write("limit selected:",Number)
+#Display start date
+	sd=st.slider("Select StartDate",datetime.date(2019,7,6))
+	st.write('StartDate:',sd)
+#Dispaly End Date
+	ed=st.slider("Select EndDate",datetime.date(2020,8,10))
+	st.write('End Date:',ed)
+	st.form_submit_button('store into MongoDB')
+	st.form_submit_button('Download CSV file')
+	st.form_submit_button('Download json file')
+	st.form_submit_button('submit')
+
+#Create a list to store scraped data
+tweetlist=[]
+
+Username=input("Enter the tweet:")
+Number=int(input("How many tweets do you want to scrape:"))
+
+#connect to mongoDB
+client=pymongo.MOngoClient("mongodb://localhost:27017/")
+
+#create database
+db=client.scrapped_data
+
+#scrape twitter data
+for tweet in sntwitter.TwitterSearchScraper('{}'.format(hashtag)).get_items():
+    if len(tweetlist)==limit:
+        break
+    else:
+        tweetlist.append(['date':tweet.date,'ID':tweet.id,'url':tweet.url,'Tweet content':tweet.content,'user':tweet.user.username,'language':tweet.lang,'hashtag':tweet.hashtags,'replycount':tweet.replyCount,'retweetcount':tweet.retweetCount,'likecount':tweet.likeCount])
+
+#store the data in a collection
+start_date=datetime.datetime(2023,1,1)
+end_date=datetime.datetime(2023,1,20)
+time_interval=end_date-start_date
+collection=db[Username+str(time_interval)]
+
+#create DataFrame
+df=pd.DatFrame(tweetlist,columns=['Date','ID','URL','Content','Username','Language','Hashtag','Reply count','Retweet Count',Like count'])
+
+#display dataframe
+display(df)
+
+#Download the dataframe in csv format
+data.to_csv(f"{hashtag}_tweets.csv",index=False)
+
+#Download the dataframe in json format
+data.to_json(f"{hashtag}_tweets.json",orient="records",force_ascii=False,indent=4)
