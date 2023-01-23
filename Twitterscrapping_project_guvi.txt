@@ -61,7 +61,7 @@ df=pd.DatFrame(tweetlist,columns=['Date','ID','URL','Content','Username','Langua
 display(df)
 
 #Download the dataframe in csv format
-data.to_csv(f"{hashtag}_tweets.csv",index=False)
+data.to_csv(f"{Username}_tweets.csv",index=False)
 
 #Download the dataframe in json format
-data.to_json(f"{hashtag}_tweets.json",orient="records",force_ascii=False,indent=4)
+data.to_json(f"{Username}_tweets.json",orient="records",force_ascii=False,indent=4)
