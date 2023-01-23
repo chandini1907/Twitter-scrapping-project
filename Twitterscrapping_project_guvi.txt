@@ -42,11 +42,11 @@ client=pymongo.MOngoClient("mongodb://localhost:27017/")
 db=client.scrapped_data
 
 #scrape twitter data
-for tweet in sntwitter.TwitterSearchScraper('{}'.format(hashtag)).get_items():
-    if len(tweetlist)==limit:
+for i,tweets in enumerate(sntwitter.TwitterSearchScraper('{}'.format(Username)).get_items()):
+    if i>Number:
         break
-    else:
-        tweetlist.append(['date':tweet.date,'ID':tweet.id,'url':tweet.url,'Tweet content':tweet.content,'user':tweet.user.username,'language':tweet.lang,'hashtag':tweet.hashtags,'replycount':tweet.replyCount,'retweetcount':tweet.retweetCount,'likecount':tweet.likeCount])
+    tweetlist.append([tweets.date,tweets.id,tweets.url,tweets.content,tweets.user.username,tweets.lang,tweets.hashtags,tweets.replyCount,tweets.retweetCount,
+    tweets.likeCount])
 
 #store the data in a collection
 start_date=datetime.datetime(2023,1,1)
