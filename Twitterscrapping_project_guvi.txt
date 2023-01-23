@@ -45,7 +45,7 @@ db=client.scrapped_data
 for i,tweets in enumerate(sntwitter.TwitterSearchScraper('{}'.format(Username)).get_items()):
     if i>Number:
         break
-    tweetlist.append([tweets.date,tweets.id,tweets.url,tweets.content,tweets.user.username,tweets.lang,tweets.hashtags,tweets.replyCount,tweets.retweetCount,
+tweetlist.append([tweets.date,tweets.id,tweets.url,tweets.content,tweets.user.username,tweets.lang,tweets.hashtags,tweets.replyCount,tweets.retweetCount,
     tweets.likeCount])
 
 #store the data in a collection
