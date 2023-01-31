@@ -36,7 +36,7 @@ Username=input("Enter the tweet:")
 Number=int(input("How many tweets do you want to scrape:"))
 
 #connect to mongoDB
-client=pymongo.MOngoClient("mongodb://localhost:27017/")
+client=pymongo.MongoClient("mongodb://localhost:27017/")
 
 #create database
 db=client.scrapped_data
@@ -55,13 +55,13 @@ time_interval=end_date-start_date
 collection=db[Username+str(time_interval)]
 
 #create DataFrame
-df=pd.DatFrame(tweetlist,columns=['Date','ID','URL','Content','Username','Language','Hashtag','Reply count','Retweet Count',Like count'])
+df=pd.DatFrame(tweetlist,columns=['Date','ID','URL','Content','Username','Language','Hashtag','Reply count','Retweet Count','Like count'])
 
 #display dataframe
 display(df)
 
 #Download the dataframe in csv format
-data.to_csv(f"{Username}_tweets.csv",index=False)
+df.to_csv(f"{Username}_tweets.csv",index=False)
 
 #Download the dataframe in json format
-data.to_json(f"{Username}_tweets.json",orient="records",force_ascii=False,indent=4)
+df.to_json(f"{Username}_tweets.json",orient="records",force_ascii=False,indent=4)
