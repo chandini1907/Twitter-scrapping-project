@@ -1,3 +1,4 @@
+#import modules
 import snscrape.modules.twitter as sntwitter
 import pandas as pd
 import streamlit as st
@@ -6,7 +7,10 @@ import pymongo
 from pymongo import MongoClient
 import time
 
-#df_tweets=pd.DataFrame()-----------?
+#make a connection with MongoDB
+client = pymongo.MongoClient("mongodb://localhost:27017/")  
+my_coll = client["Twitter_collection1"]
+
 #title of web page
 st.title("Twitter Scrapper")
 genre=st.radio("Enter Your",('Keyword','Hashtag'))
@@ -34,17 +38,22 @@ else:
         tweets_list2.append([ tweet.id, tweet.date,  tweet.content, tweet.lang, tweet.user.username, tweet.replyCount, tweet.retweetCount,tweet.likeCount, tweet.source, tweet.url ])
     df_tweets = pd.DataFrame(tweets_list2, columns=['ID','Date','Content', 'Language', 'Username', 'ReplyCount', 'RetweetCount', 'LikeCount','Source', 'Url'])
 
-#download into mongodb
 
-if st.button("Download into mongodb"):
-    client=pymongo.MongoClient("mongodb://localhost:27017")
-    df_tweets.to_csv('collection.csv',mode='a')
-    df=pd.read_csv('collection.csv',encoding='unicode_escape')
-    datamongo=df.to_dict(orient="records")
-    db=client["twitter_collection"]
-    db.collection.insert_many(datamongo)
-    st.success('Successfully uploaded to MongoDB', icon="✅")
 
+ # UPLOAD DATA TO MongoDB
+
+if st.button('Upload to MongoDB'):
+    coll=word
+    coll=coll.replace(' ','_')+'_Tweets'
+    mycoll=my_coll[coll]
+    dict=df_tweets.to_dict('records')
+    if dict:
+        mycoll.insert_many(dict) 
+        ts = time.time()
+        mycoll.update_many({}, {"$set": {"KeyWord_or_Hashtag": word+str(ts)}}, upsert=False, array_filters=None)
+        st.success('Successfully uploaded to database', icon="✅")
+    else:
+        st.warning('Cant upload because there are no tweets', icon="⚠️")
 
 #Download csv file
 @st.cache
